@@ -16,3 +16,7 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
+      - name: Publish
+        run: dotnet publish FunctionDemo.csproj -c Release -o output
+      - name: Zip folder
+        run: cd output && zip -r release.zip .
