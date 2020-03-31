@@ -1,28 +1,17 @@
 using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System.Linq;
+using Amazon.Lambda.Core;
 
 namespace Egineering.Function
 {
     public static class FunctionDemo
     {
-        [FunctionName("FunctionDemo")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+        [LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
+        public static object FunctionHandler(ILambdaContext context)
         {
-            int value = string.IsNullOrWhiteSpace(req.Query["value"]) ?
-                DateTime.Now.Year :
-                int.Parse(req.Query["value"]);
-
+            int value = DateTime.Now.Year;
             var output = new { value = value, factors = GetFactors(value) };
-
-            return (ActionResult)new OkObjectResult(output);
+            return output;
         }
 
         private static int[] GetFactors(int value)
