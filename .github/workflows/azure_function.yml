@@ -2,17 +2,21 @@ name: Azure Function
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '2.1.805'
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '2.1.805'
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Publish
+        run: dotnet publish FunctionDemo.csproj -c Release -o output
+      - name: Zip folder
+        run: cd output && zip -r release.zip .
